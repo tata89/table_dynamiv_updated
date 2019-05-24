@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Develop the table using Javascript and Json</title>
+    <style>
+        th,
+        td,
+        p,
+        input {
+            font: 12px Verdana;
+        }
+
+        table,
+        th,
+        td {
+            border: solid 1px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="button" onclick="CreateTable()" value="Create Table" />
+    <h2>Equipment-Wise Details</h2>
+    <p id="showData"></p>
+</body>
+<script type="text/javascript" src="data.json"></script>
+<script>
+    function CreateTable() {
+        var myTable = [
+
+            {
+                "MachineName": "Auto Winding Machine",
+                "MachineId": "machine001",
+                "Energy Consumed(kWh)":
+                {
+                    "daily_energy": 0,
+                    "monthly_energy": 0,
+                    "yearly_energy": 0
+                },
+                "active_power": 0,
+                "apparent_power": 0,
+                "reactive_power": 0,
+                "current": 0,
+                "voltage": 0,
+                "power_factor": 0,
+                "Idle Time": {
+                    "idle_daily": 0,
+                    "idle_monthly": 0,
+                    "idle_yearly": 0
+                }
+
+            },
+
+            {
+                "MachineName": "Boiler Machine",
+                "MachineId": "machine004",
+                "Energy Consumed(kWh)":
+                {
+                    "daily_energy": 0,
+                    "monthly_energy": 0,
+                    "yearly_energy": 0
+                },
+                "active_power": 0,
+                "apparent_power": 0,
+                "reactive_power": 0,
+                "current": 0,
+                "voltage": 0,
+                "power_factor": 0,
+                "Idle Time": {
+                    "idle_daily": 0,
+                    "idle_monthly": 0,
+                    "idle_yearly": 0
+                }
+
+            }
+
+        ]
+
+        // EXTRACT VALUE FOR TABLE HEADER.
+        var col = {};
+        for (let key in myTable[0]) {
+            if (!col[key]) {
+                col[key] = []
+                col[key] = typeof myTable[0][key] === "object" ? Object.keys(myTable[0][key]) : []
+            } else {
+                col[key] = typeof myTable[0][key] === "object" ? Object.keys(myTable[0][key]) : []
+            }
+        }
+        console.log(col, '--col')
+
+        // CREATE TABLE
+        var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE
+
+        var tr = table.insertRow(-1);                   // TABLE ROW
+
+        for (var i in col) {
+            if (col[i].length === 0) {
+                var th = document.createElement("th");      // TABLE HEADER. 
+                th.innerHTML = i;
+                tr.appendChild(th);
+            } else {
+                var mainTh = document.createElement("th");
+                var subTr = table.insertRow(-1);
+                for (var j in col[i]) {
+                    var subTh = document.createElement("th");      // TABLE SUB HEADER.
+                    subTh.innerHTML = col[i][j];
+                    subTr.appendChild(subTh)
+                }
+                mainTh.innerHTML = i
+                mainTh.appendChild(subTr)
+                tr.appendChild(mainTh);
+            }
+
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS
+        for (var i in myTable) {
+
+            tr = table.insertRow(-1);
+            for (let c in myTable[i]) {
+
+                if (typeof myTable[i][c] === "object") {
+                    var nestedObj = myTable[i][c]
+                    var innertabCell = tr.insertCell(-1);
+                    var innerRow = document.createElement("tr");
+                    for (var item in nestedObj) {
+                        var innerValue = innerRow.insertCell(-1)
+                        innerValue.innerHTML = nestedObj[item]
+                    }
+                    innertabCell.appendChild(innerRow);
+                } else {
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = myTable[i][c];
+                }
+            }
+        }
+
+        //  ADD THE NEWLY CREATED TABLE WITH JSON DATA TO P TAG
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+    }
+</script>
+
+</html>
